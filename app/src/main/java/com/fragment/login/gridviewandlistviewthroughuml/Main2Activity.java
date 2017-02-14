@@ -10,10 +10,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,32 +25,37 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class Main2Activity extends AppCompatActivity {
 
-    GridView gridView;
-    int gotbread;
+    ListView listView;
+    Quotes q;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main2);
 
-        new MyFirstClass().execute("http://rapidans.esy.es/test/getallcat.php");
+
+           int gotid = getIntent().getIntExtra("pos", 1);
+
+            new MySecondClass().execute("http://rapidans.esy.es/test/getquotes.php?cat_id="+gotid);
+
 
 
     }
 
-    class MyFirstClass extends AsyncTask<String,Void,String> {
+    class MySecondClass extends AsyncTask<String,Void,String> {
 
-        ProgressDialog dialog;
-        ArrayList<Post> postArrayList=new ArrayList<>();
-        CustomAdapterG adapterG;
+        private ProgressDialog dialog;
+        ArrayList<Quotes> quotesArrayList = new ArrayList<>();
+        CustomAdapterL adapterL;
 
         Context context;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            dialog=new ProgressDialog(MainActivity.this);
+            dialog = new ProgressDialog(Main2Activity.this);
             dialog.setMessage("Loading...");
             dialog.setCancelable(false);
             dialog.show();
@@ -60,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 URL url = new URL(params[0]);
                 try {
-                    connection = (HttpURLConnection)url.openConnection();
+                    connection = (HttpURLConnection) url.openConnection();
                     connection.connect();
 
                     InputStream stream = connection.getInputStream();
@@ -69,12 +76,12 @@ public class MainActivity extends AppCompatActivity {
                     StringBuffer buffer = new StringBuffer();
                     String line = "";
 
-                    while ((line =reader.readLine())!= null){
+                    while ((line = reader.readLine()) != null) {
                         buffer.append(line);
                     }
 
                     String bufferString = buffer.toString();
-                    return  bufferString;
+                    return bufferString;
 
 
                 } catch (IOException e) {
@@ -89,42 +96,42 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if(dialog.isShowing()) {
+            if (dialog.isShowing()) {
                 dialog.dismiss();
             }
-            postArrayList = new ArrayList<>();
+            quotesArrayList = new ArrayList<>();
 
             try {
 
-               JSONObject jsonObject1=new JSONObject(s);
-
+                JSONObject jsonObject1 = new JSONObject(s);
 
                 JSONArray jsonArray = jsonObject1.getJSONArray("data");
-                    for (int i = 0; i <jsonArray.length() ; i++)
-                    {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
 
 
-                    Post p = new Post();
-                    p.setId(jsonObject.getInt("id"));
+                    q = new Quotes();
+                    q.setId(jsonObject.getInt("id"));
+                    q.setCat_id(jsonObject.getInt("cat_id"));
+                    q.setQuotes(jsonObject.getString("quotes"));
 
-                    p.setDescription(jsonObject.getString("name"));
-
-                    postArrayList.add(p);
+                    quotesArrayList.add(q);
                 }
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            adapterL = new CustomAdapterL(Main2Activity.this,quotesArrayList);
 
-            adapterG = new CustomAdapterG(MainActivity.this,postArrayList);
+            listView = (ListView) findViewById(R.id.listview1);
 
-            gridView = (GridView)findViewById(R.id.gridview1);
+            listView.setAdapter(adapterL);
 
-            gridView.setAdapter(adapterG);
+            String passedVar=null;
 
 
 
         }
     }
+
 }
