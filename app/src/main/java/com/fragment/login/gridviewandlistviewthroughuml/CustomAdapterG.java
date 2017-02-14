@@ -72,7 +72,7 @@ public class CustomAdapterG extends BaseAdapter {
             holder=(ViewHolder)convertView.getTag();
         }
 
-        holder.desc.setText("Name: "+posts.get(position).getDescription());
+        holder.desc.setText(posts.get(position).getDescription());
 
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override

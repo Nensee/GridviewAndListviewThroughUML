@@ -3,6 +3,7 @@ package com.fragment.login.gridviewandlistviewthroughuml;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -122,6 +123,13 @@ public class MainActivity extends AppCompatActivity {
             gridView = (GridView)findViewById(R.id.gridview1);
 
             gridView.setAdapter(adapterG);
+
+
+            gridView.setBackgroundColor(Color.GRAY);
+            gridView.setVerticalSpacing(2);
+            gridView.setHorizontalSpacing(2);
+
+
 
 
 

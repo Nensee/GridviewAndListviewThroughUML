@@ -71,7 +71,7 @@ public class CustomAdapterL extends BaseAdapter {
         {
             holder=(ViewHolder)convertView.getTag();
         }
-        holder.quotes.setText("Quotes: "+quots.get(position).getQuotes());
+        holder.quotes.setText(quots.get(position).getQuotes());
 
 
 
